@@ -60,6 +60,9 @@ export async function signup(formData: FormData) {
     redirect('/signup?error=All fields are required.')
   }
 
+  // Determine site URL dynamically depending on environment
+  const origin = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
+
   const { error } = await supabase.auth.signUp({
     email,
     password,
@@ -68,6 +71,8 @@ export async function signup(formData: FormData) {
         full_name: fullName,
         role: role, // Passes metadata for DB profile creation trigger
       },
+      // Directs the confirmation link back to our Route Handler
+      emailRedirectTo: `${origin}/auth/callback`,
     },
   })
 
